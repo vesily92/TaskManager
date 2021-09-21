@@ -15,9 +15,29 @@ class TaskListCell: UITableViewCell {
     
     @IBOutlet var doneButton: UIButton!
     
-    var doneButtonAction: DoneButtonAction?
+    private var doneButtonAction: DoneButtonAction?
     
     @IBAction func doneButtonTapped(_ sender: UIButton) {
         doneButtonAction?()
+    }
+    
+    func configure(title: String,
+                   dateText: String,
+                   isDone: Bool,
+                   doneButtonAction: @escaping DoneButtonAction) {
+        
+        /*
+         A closure parameter needs an @escaping annotation when the closure is stored and executed after the function returns.
+         */
+        
+        titleLabel.text = title
+        dateLabel.text = dateText
+        let image = isDone
+            ? UIImage(systemName: "square")
+            : UIImage(systemName: "checkmark.square")?
+                .withTintColor(.systemGreen, renderingMode: .alwaysOriginal)
+        doneButton.setBackgroundImage(image, for: .normal)
+        self.doneButtonAction = doneButtonAction
+        
     }
 }

@@ -12,6 +12,16 @@ class TaskListController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showTaskDetailSegue",
+           let destination = segue.destination as? TaskDetailViewController,
+           let cell = sender as? UITableViewCell,
+           let indexPath = tableView.indexPath(for: cell) {
+            let task = Task.testData[indexPath.row]
+            destination.configure(with: task)
+        }
+    }
 }
 
 extension TaskListController {
@@ -30,12 +40,8 @@ extension TaskListController {
             fatalError("Unable to dequeue Task cell")
         }
         let task = Task.testData[indexPath.row]
-        let image = task.isComplete ? UIImage(systemName: "square") : UIImage(systemName: "checkmark.square")
         
-        cell.titleLabel.text = task.title
-        cell.dateLabel.text = task.date.description
-        cell.doneButton.setBackgroundImage(image, for: .normal)
-        cell.doneButtonAction = {
+        cell.configure(title: task.title, dateText: task.date.description, isDone: task.isComplete) {
             Task.testData[indexPath.row].isComplete.toggle()
             tableView.reloadRows(at: [indexPath], with: .none)
         }
